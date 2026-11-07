@@ -18,7 +18,7 @@
   /* ---------- 그림 자리 ---------- */
   function picHTML(sp, alt) {
     if (state.images[sp.id]) {
-      return '<div class="pic"><img src="images/' + esc(sp.id) + '.' + state.imgExt + '" alt="' + esc(alt) + '" loading="lazy" width="480" height="360"></div>';
+      return '<div class="pic"><img src="images/' + esc(sp.id) + '.' + state.imgExt + '" alt="' + esc(alt) + '" loading="lazy" width="960" height="720"></div>';
     }
     return '<div class="pic" aria-hidden="true"><div class="ph">' +
       '<svg width="24" height="20" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1.5" y="1.5" width="21" height="17" rx="2"></rect><circle cx="8" cy="7" r="2"></circle><path d="M2 16l6-5 4 3 4-4 6 5"></path></svg>' +
