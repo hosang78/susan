@@ -79,21 +79,23 @@ with open(os.path.join(img_dir, 'image_list.csv'), 'w', encoding='utf-8-sig', ne
 guide = open(os.path.join(img_dir, 'CHATGPT_가이드.md'), encoding='utf8').read()
 rules = guide.split('<!-- RULES START -->')[1].split('<!-- RULES END -->')[0].strip()
 pdir = os.path.join(img_dir, 'prompts'); os.makedirs(pdir, exist_ok=True)
+drawn = {fn[:-5] for fn in os.listdir(img_dir) if fn.endswith('.webp')}
+todo = [s for s in species if s['id'] not in drawn]
 for fn in os.listdir(pdir):
-    if fn.startswith('batch_'): os.remove(os.path.join(pdir, fn))
-BATCH = 10
-nb = (len(species) + BATCH - 1) // BATCH
+    if fn.startswith(('batch_', 'set_')): os.remove(os.path.join(pdir, fn))
+BATCH = 30
+nb = (len(todo) + BATCH - 1) // BATCH
 for b in range(nb):
-    chunk = species[b * BATCH:(b + 1) * BATCH]
-    lines = [f'# 해양수산도감 그림 묶음 {b + 1:02d} / {nb:02d} ({len(chunk)}종)', '',
+    chunk = todo[b * BATCH:(b + 1) * BATCH]
+    lines = [f'# 해양수산도감 그림 묶음 set_{b + 1:02d} / {nb:02d} ({len(chunk)}종)', '',
              '아래 전체를 복사해 ChatGPT에 붙여 넣으세요.', '', '---', '', rules.replace('{BATCH}', f'{b + 1:02d}'), '',
-             f'## 이번 묶음 목록 (batch_{b + 1:02d})', '']
+             f'## 이번 묶음 목록 (set_{b + 1:02d}, {len(chunk)}종)', '']
     for i, s in enumerate(chunk, 1):
         nm = s['name'] if s['name'] == s['kor'] else f"{s['name']} (국명 {s['kor']})"
         look = s['look'] or '원문에 생김새 설명 없음. 학명 기준으로 일반적인 모습을 그리고 확인 필요 사항에 반드시 표시.'
         lines += [f'{i}. 파일명: `{s["id"]}.webp`', f'   - 이름: {nm}', f'   - 학명: {s["sci"]}',
                   f'   - 분류: {s["group"]} › {s["sub"]} › {s["fam"]}', f'   - 그리는 방향: {pose(s)}', f'   - 생김새: {look}', '']
-    open(os.path.join(pdir, f'batch_{b + 1:02d}.md'), 'w', encoding='utf8').write('\n'.join(lines))
+    open(os.path.join(pdir, f'set_{b + 1:02d}.md'), 'w', encoding='utf8').write('\n'.join(lines))
 man = os.path.join(OUT, 'images.json')
 have = sorted(fn[:-5] for fn in os.listdir(img_dir) if fn.endswith('.webp') and fn[:-5] in ids)
 print('prompt batches:', nb)
