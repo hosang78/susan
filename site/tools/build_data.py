@@ -83,7 +83,7 @@ drawn = {fn[:-5] for fn in os.listdir(img_dir) if fn.endswith('.webp')}
 todo = [s for s in species if s['id'] not in drawn]
 for fn in os.listdir(pdir):
     if fn.startswith(('batch_', 'set_')): os.remove(os.path.join(pdir, fn))
-BATCH = 30
+BATCH = 1000  # 남은 종 전체를 한 파일로
 nb = (len(todo) + BATCH - 1) // BATCH
 for b in range(nb):
     chunk = todo[b * BATCH:(b + 1) * BATCH]
